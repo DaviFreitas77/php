@@ -21,20 +21,22 @@ if(json_last_error() === JSON_ERROR_NONE){
     $desc = $json ['desc'];
     $cor = $json['cor'] ?? '';
     $images = json_encode($json['images']);
-    $idUser = $json['idUser'];
+    $idUser =  $json['idUser'];
+   $caracteristica = json_encode($json['caracteristica']);
 
-    $sql = 'INSERT INTO objeto (categoriaObjeto, nomeObjeto, tamanhoObjeto, localidadeObjeto, andar, corObjeto, images, usuario, descObjeto, dataRegistro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())';
+   $sql = 'INSERT INTO objeto (categoriaObjeto, nomeObjeto, tamanhoObjeto, localidadeObjeto, descObjeto, caracteristicasAdicionais, andar, corObjeto, images, usuario, dataRegistro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())';
 
     $stmt = $conexao->prepare($sql);
     $stmt->bindParam(1,$category);
     $stmt->bindParam(2,$item);
-    $stmt->bindParam(3,$tamanho).
-    $stmt->bindParam(4,$andar);
-    $stmt->bindParam(5,$local);
-    $stmt->bindParam(6,$cor);
-    $stmt->bindParam(7,$images);
-    $stmt->bindParam(8,$idUser);
-    $stmt->bindParam(9,$desc);
+    $stmt->bindParam(3,$tamanho);
+    $stmt->bindParam(4,$local);
+    $stmt->bindParam(5,$desc);
+    $stmt->bindParam(6,$caracteristica);
+    $stmt->bindParam(7,$andar);
+    $stmt->bindParam(8,$cor);
+    $stmt->bindParam(9,$images);
+    $stmt->bindParam(10,$idUser);
  
 
 
@@ -54,7 +56,7 @@ if(json_last_error() === JSON_ERROR_NONE){
         'local'=> $json['local'],
         'desc' =>$json ['desc'],
         'dataRegistro' => $dataRegistro ,
-        
+        'caracteristica' => $caracteristica,
         'id' => $newObjectId,
         'idUser'=> $json ['idUser']
 

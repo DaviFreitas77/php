@@ -4,7 +4,7 @@ require './db.php';
 header('Content-Type: application/json'); 
 
 
-$sql = 'SELECT  idPost,objeto.idObjeto,nomeObjeto,categoriaObjeto,tamanhoObjeto,localidadeObjeto,andar,corObjeto,images,nome,imagem,descObjeto,dataRegistro from post INNER JOIN objeto on post.idObjeto = objeto.idObjeto
+$sql = 'SELECT  idPost,objeto.idObjeto,idPost,nomeObjeto,categoriaObjeto,tamanhoObjeto,localidadeObjeto,andar,corObjeto,images,nome,imagem,descObjeto,dataRegistro,caracteristicasAdicionais from post INNER JOIN objeto on post.idObjeto = objeto.idObjeto
 INNER JOIN 
     users ON post.idUsuario = users.id'; 
 
