@@ -8,6 +8,7 @@ $json = json_decode(file_get_contents('php://input'), true);
 $item = $json['item'] ?? null;
 $tamanho = $json['tamanho'] ?? null;
 $cor = $json['cor'] ?? null;
+$adicional = $json ['adicional'] ?? null;
 
 
 $sql = 'SELECT idPost, objeto.idObjeto, idPost, nomeObjeto, categoriaObjeto, tamanhoObjeto, localidadeObjeto, andar, corObjeto, images, nome, imagem, descObjeto, dataRegistro, caracteristicasAdicionais 
@@ -33,6 +34,18 @@ if ($cor) {
     $params[] = $cor;
 }
 
+if ($adicional) {
+    $conditions = [];
+    
+    if (is_array($adicional)) {
+        foreach ($adicional as $value) {
+            $conditions[] = 'JSON_CONTAINS(caracteristicasAdicionais, ?)';
+            $params[] = json_encode($value);
+        }
+    }
+
+    $sql .= ' AND (' . implode(' OR ', $conditions) . ')';
+}
 
 $stmt = $conexao->prepare($sql);
 
