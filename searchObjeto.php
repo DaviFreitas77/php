@@ -8,13 +8,13 @@ $json = json_decode(file_get_contents('php://input'), true);
 $item = $json['item'] ?? null;
 $tamanho = $json['tamanho'] ?? null;
 $cor = $json['cor'] ?? null;
-$adicional = $json ['adicional'] ?? null;
+$marca = $json['marca'] ?? null;
 
 
-$sql = 'SELECT idPost, objeto.idObjeto, idPost, nomeObjeto, categoriaObjeto, tamanhoObjeto, localidadeObjeto, andar, corObjeto, images, nome, imagem, descObjeto, dataRegistro, caracteristicasAdicionais 
-        FROM post 
-        INNER JOIN objeto ON post.idObjeto = objeto.idObjeto
-        INNER JOIN users ON post.idUsuario = users.id 
+$sql = 'SELECT idPost, objeto.idObjeto, idPost, nomeObjeto, categoriaObjeto, tamanhoObjeto, localidadeObjeto, andar, corObjeto, images, nome, imagem, descObjeto, dataRegistro, marcaObjeto 
+FROM post 
+INNER JOIN objeto ON post.idObjeto = objeto.idObjeto
+INNER JOIN users ON post.idUsuario = users.id 
         WHERE 1=1'; 
 
 $params = [];
@@ -34,19 +34,10 @@ if ($cor) {
     $params[] = $cor;
 }
 
-if ($adicional) {
-    $conditions = [];
-    
-    if (is_array($adicional)) {
-        foreach ($adicional as $value) {
-            $conditions[] = 'JSON_CONTAINS(caracteristicasAdicionais, ?)';
-            $params[] = json_encode($value);
-        }
-    }
-
-    $sql .= ' AND (' . implode(' OR ', $conditions) . ')';
+if ($marca) {
+    $sql .= ' AND marcaObjeto = ?';
+    $params[] = $marca;
 }
-
 $stmt = $conexao->prepare($sql);
 
 if ($stmt) {
