@@ -1,57 +1,67 @@
 <?php
 require './db.php';
 
-
+// Obtém os dados JSON da requisição
 $json = json_decode(file_get_contents('php://input'), true);
 
-
+// Extraí os parâmetros do JSON ou define-os como null se não estiverem presentes
 $item = $json['item'] ?? null;
 $tamanho = $json['tamanho'] ?? null;
 $cor = $json['cor'] ?? null;
 $marca = $json['marca'] ?? null;
 
+// Monta a consulta SQL com base nos parâmetros fornecidos
+$sql = 'SELECT idPost, objeto.idObjeto, nomeObjeto, categoriaObjeto, localidadeObjeto, images, nome, imagem, descObjeto, dataRegistro, descMarca, descTamanho, descAndar, descLocal, descCor, descSubCategoria, descCategoria, users.id, post.statusPost
+        FROM post
+        INNER JOIN objeto ON post.idObjeto = objeto.idObjeto
+        INNER JOIN users ON post.idUsuario = users.id
+        INNER JOIN tbmarca ON objeto.marcaObjeto = tbmarca.idMarca
+        INNER JOIN tbtamanho ON objeto.tamanhoObjeto = tbtamanho.idTamanho
+        INNER JOIN tbandar ON objeto.andar = tbandar.idAndar
+        INNER JOIN tblocal ON objeto.localidadeObjeto = tblocal.idLocal
+        INNER JOIN tbcor ON objeto.corObjeto = tbcor.idCor
+        INNER JOIN tbsubcategoria ON objeto.nomeObjeto = tbsubcategoria.idSubCategoria
+        INNER JOIN tbcategoria ON objeto.categoriaObjeto = tbcategoria.idCategoria
+        WHERE post.statusPost = :statusAtivo'; // Utilize parâmetro nomeado para statusAtivo
 
-$sql = 'SELECT idPost, objeto.idObjeto, idPost, nomeObjeto, categoriaObjeto, tamanhoObjeto, localidadeObjeto, andar, corObjeto, images, nome, imagem, descObjeto, dataRegistro, marcaObjeto 
-FROM post 
-INNER JOIN objeto ON post.idObjeto = objeto.idObjeto
-INNER JOIN users ON post.idUsuario = users.id 
-        WHERE 1=1'; 
+$params = ['statusAtivo' => 3]; // Define o statusAtivo como 3 por padrão
 
-$params = [];
-
+// Adiciona condições à consulta com base nos parâmetros fornecidos
 if ($item) {
-    $sql .= ' AND nomeObjeto = ?';
-    $params[] = $item;
+    $sql .= ' AND nomeObjeto = :item';
+    $params['item'] = $item;
 }
 
 if ($tamanho) {
-    $sql .= ' AND tamanhoObjeto = ?';
-    $params[] = $tamanho;
+    $sql .= ' AND tamanhoObjeto = :tamanho';
+    $params['tamanho'] = $tamanho;
 }
 
 if ($cor) {
-    $sql .= ' AND corObjeto = ?';
-    $params[] = $cor;
+    $sql .= ' AND corObjeto = :cor';
+    $params['cor'] = $cor;
 }
 
 if ($marca) {
-    $sql .= ' AND marcaObjeto = ?';
-    $params[] = $marca;
+    $sql .= ' AND marcaObjeto = :marca';
+    $params['marca'] = $marca;
 }
+
+// Prepara a consulta SQL
 $stmt = $conexao->prepare($sql);
 
 if ($stmt) {
+    // Executa a consulta com os parâmetros fornecidos
     $stmt->execute($params);
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
- 
+    // Retorna os resultados ou uma mensagem de nenhum objeto encontrado
     if ($results) {
         echo json_encode($results);
     } else {
         echo json_encode(['message' => 'Nenhum objeto encontrado.']);
     }
 } else {
-
     echo json_encode(['error' => 'Erro ao preparar a consulta.']);
 }
 ?>
