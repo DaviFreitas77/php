@@ -3,7 +3,7 @@ require './db.php';
 
 header('Content-Type: Application/json');
 
-$sql =  'SELECT id,nome,email  FROM users;';
+$sql =  'SELECT id,nome,email,imagem  FROM users;';
 try{        
     $stmt = $conexao->prepare($sql);
     $stmt->execute();
