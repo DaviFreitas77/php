@@ -31,10 +31,10 @@ if(json_last_error() === JSON_ERROR_NONE){
     $stmt->bindParam(1,$category);
     $stmt->bindParam(2,$item);
     $stmt->bindParam(3,$tamanho);
-    $stmt->bindParam(4,$andar);
+    $stmt->bindParam(4,$local);
     $stmt->bindParam(5,$desc);
     $stmt->bindParam(6,$caracteristica);
-    $stmt->bindParam(7,$local);
+    $stmt->bindParam(7,$andar);
     $stmt->bindParam(8,$cor);
     $stmt->bindParam(9,$images);
     $stmt->bindParam(10,$idUser);
