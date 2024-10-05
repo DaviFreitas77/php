@@ -4,13 +4,13 @@ require './db.php';
 // Obtém os dados JSON da requisição
 $json = json_decode(file_get_contents('php://input'), true);
 
-// Extraí os parâmetros do JSON ou define-os como null se não estiverem presentes
+
 $item = $json['item'] ?? null;
 $tamanho = $json['tamanho'] ?? null;
 $cor = $json['cor'] ?? null;
 $marca = $json['marca'] ?? null;
 
-// Monta a consulta SQL com base nos parâmetros fornecidos
+
 $sql = 'SELECT idPost, objeto.idObjeto, nomeObjeto, categoriaObjeto, localidadeObjeto, images, nome, imagem, descObjeto, dataRegistro, descMarca, descTamanho, descAndar, descLocal, descCor, descSubCategoria, descCategoria, users.id, post.statusPost
         FROM post
         INNER JOIN objeto ON post.idObjeto = objeto.idObjeto
@@ -55,7 +55,7 @@ if ($stmt) {
     $stmt->execute($params);
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
-    // Retorna os resultados ou uma mensagem de nenhum objeto encontrado
+    
     if ($results) {
         echo json_encode($results);
     } else {
