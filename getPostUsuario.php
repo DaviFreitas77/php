@@ -5,15 +5,22 @@ header('Content-Type:application/json');
 
 $usuario = $_GET['id'] ?? null;
 
-$sql = "SELECT post.*, objeto.images, tbsubcategoria.descSubCategoria, tbmarca.descMarca, tbcor.descCor, tbandar.descAndar, tblocal.descLocal
+$sql = "SELECT post.*, 
+       objeto.images, 
+       tbsubcategoria.descSubCategoria, 
+       tbmarca.descMarca, 
+       tbcor.descCor, 
+       tbandar.descAndar, 
+       tblocal.descLocal, 
+       objeto.dataRegistro
 FROM post
 INNER JOIN objeto ON post.idObjeto = objeto.idObjeto
 INNER JOIN tbsubcategoria ON objeto.nomeObjeto = tbsubcategoria.idSubCategoria 
-INNER JOIN tbmarca on objeto.marcaObjeto = tbmarca.idMarca
-INNER JOIN tbcor on objeto.corObjeto = tbcor.idCor
-INNER JOIN tbandar on objeto.andar = tbandar.idAndar
-INNER JOIN tblocal on objeto.localidadeObjeto = tblocal.idLocal
-WHERE $usuario
+INNER JOIN tbmarca ON objeto.marcaObjeto = tbmarca.idMarca
+INNER JOIN tbcor ON objeto.corObjeto = tbcor.idCor
+INNER JOIN tbandar ON objeto.andar = tbandar.idAndar
+INNER JOIN tblocal ON objeto.localidadeObjeto = tblocal.idLocal
+WHERE post.idUsuario = $usuario;
 ";
 
 $stmt = $conexao->prepare($sql);
