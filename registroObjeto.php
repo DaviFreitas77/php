@@ -22,10 +22,11 @@ if(json_last_error() === JSON_ERROR_NONE){
     $cor = $json['cor'] ?? '';
     $images = json_encode($json['images']);
     $idUser =  $json['idUser'];
+    $caractAdd =  $json['caractAdicional'] ?? '';
    $caracteristica = json_encode($json['caracteristica']);
 
 
-   $sql = 'INSERT INTO objeto (categoriaObjeto, nomeObjeto, tamanhoObjeto, localidadeObjeto, descObjeto, marcaObjeto, andar, corObjeto, images, usuario, dataRegistro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())';
+   $sql = 'INSERT INTO objeto (categoriaObjeto, nomeObjeto, tamanhoObjeto, localidadeObjeto, descObjeto, marcaObjeto, andar, corObjeto, images, usuario, dataRegistro,caractAdicional) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,NOW(), ?)';
 
     $stmt = $conexao->prepare($sql);
     $stmt->bindParam(1,$category);
@@ -38,6 +39,7 @@ if(json_last_error() === JSON_ERROR_NONE){
     $stmt->bindParam(8,$cor);
     $stmt->bindParam(9,$images);
     $stmt->bindParam(10,$idUser);
+    $stmt->bindParam(11,$caractAdd);
   
  
 

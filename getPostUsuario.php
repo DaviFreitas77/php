@@ -4,7 +4,7 @@ require './db.php';
 header('Content-Type:application/json');
 
 $usuario = $_GET['id'] ?? null;
-
+$status = 3;
 $sql = "SELECT post.*, 
        objeto.images, 
        tbsubcategoria.descSubCategoria, 
@@ -12,7 +12,11 @@ $sql = "SELECT post.*,
        tbcor.descCor, 
        tbandar.descAndar, 
        tblocal.descLocal, 
-       objeto.dataRegistro
+       objeto.dataRegistro,
+       tbcaracteristicas.fkCaracterisca,
+       tbcapacidadependrive.descCapacidade
+
+
 FROM post
 INNER JOIN objeto ON post.idObjeto = objeto.idObjeto
 INNER JOIN tbsubcategoria ON objeto.nomeObjeto = tbsubcategoria.idSubCategoria 
@@ -20,7 +24,10 @@ INNER JOIN tbmarca ON objeto.marcaObjeto = tbmarca.idMarca
 INNER JOIN tbcor ON objeto.corObjeto = tbcor.idCor
 INNER JOIN tbandar ON objeto.andar = tbandar.idAndar
 INNER JOIN tblocal ON objeto.localidadeObjeto = tblocal.idLocal
-WHERE post.idUsuario = $usuario;
+INNER JOIN tbcaracteristicas ON objeto.caractAdicional = tbcaracteristicas.idCaractestica
+INNER JOIN tbcapacidadependrive ON tbcaracteristicas.fkCaracterisca = tbcapacidadependrive.idCapacidade
+WHERE post.statusPost = $status
+  AND post.idUsuario = $usuario
 ";
 
 $stmt = $conexao->prepare($sql);

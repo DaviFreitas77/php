@@ -9,9 +9,10 @@ $item = $json['item'] ?? null;
 $tamanho = $json['tamanho'] ?? null;
 $cor = $json['cor'] ?? null;
 $marca = $json['marca'] ?? null;
+$caracteristica = $json['caracteristica'] ?? null;
 
 
-$sql = 'SELECT idPost, objeto.idObjeto, nomeObjeto, categoriaObjeto, localidadeObjeto, images, nome, imagem, descObjeto, dataRegistro, descMarca, descTamanho, descAndar, descLocal, descCor, descSubCategoria, descCategoria, users.id, post.statusPost
+$sql = 'SELECT idPost, objeto.idObjeto, nomeObjeto, categoriaObjeto, localidadeObjeto, images, nome, imagem, descObjeto, dataRegistro, descMarca, descTamanho, descAndar, descLocal, descCor, descSubCategoria, descCategoria, users.id,tbcaracteristicas.fkCaracterisca, post.statusPost,tbcapacidadependrive.descCapacidade
         FROM post
         INNER JOIN objeto ON post.idObjeto = objeto.idObjeto
         INNER JOIN users ON post.idUsuario = users.id
@@ -22,11 +23,13 @@ $sql = 'SELECT idPost, objeto.idObjeto, nomeObjeto, categoriaObjeto, localidadeO
         INNER JOIN tbcor ON objeto.corObjeto = tbcor.idCor
         INNER JOIN tbsubcategoria ON objeto.nomeObjeto = tbsubcategoria.idSubCategoria
         INNER JOIN tbcategoria ON objeto.categoriaObjeto = tbcategoria.idCategoria
-        WHERE post.statusPost = :statusAtivo'; // Utilize parâmetro nomeado para statusAtivo
+        INNER JOIN tbcaracteristicas ON objeto.caractAdicional = tbcaracteristicas.idCaractestica
+        INNER JOIN tbcapacidadependrive on tbcaracteristicas.fkCaracterisca = tbcapacidadependrive.idCapacidade
+        WHERE post.statusPost = :statusAtivo'; 
 
-$params = ['statusAtivo' => 3]; // Define o statusAtivo como 3 por padrão
+$params = ['statusAtivo' => 3]; 
 
-// Adiciona condições à consulta com base nos parâmetros fornecidos
+
 if ($item) {
     $sql .= ' AND nomeObjeto = :item';
     $params['item'] = $item;
@@ -47,11 +50,15 @@ if ($marca) {
     $params['marca'] = $marca;
 }
 
-// Prepara a consulta SQL
+if ($caracteristica) {
+    $sql .= ' AND objeto.caractAdicional = :caracteristica';
+    $params['caracteristica'] = $caracteristica;
+}
+
+
 $stmt = $conexao->prepare($sql);
 
 if ($stmt) {
-    // Executa a consulta com os parâmetros fornecidos
     $stmt->execute($params);
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
